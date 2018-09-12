@@ -68,10 +68,33 @@ class DynamicProgramming
        @super_frog_cache[n] = moves
     end
 
-  # Helper method for bottom-up implementation
-  def knapsack_table(weights, values, capacity)
-  end
+def knapsack(weights, values, capacity)
+  return 0 if capacity.zero? || weights.length.zero?
+  result_table = knapsack_table(weights, values, capacity)
+  result_table[capacity][weights.length - 1]
 
-  def maze_solver(maze, start_pos, end_pos)
+end
+
+# Helper method for bottom-up implementation
+def knapsack_table(weights, values, capacity)
+  solutions_table = []
+  (0..capacity).each do |idx1|
+    solutions_table[idx1] = []
+    (0..weights.length - 1).each do |idx2|
+      if idx1 == 0
+        solutions_table[idx1][idx2] = 0
+      elsif idx2 == 0
+        solutions_table[idx1][idx2] = weights[0] > idx1 ? 0 : values[0]
+      else
+        opt1 = solutions_table[idx1][idx2 - 1]
+        opt2 = idx1 < weights[idx2] ? 0 : solutions_table[idx1 - weights[idx2]][idx2 - 1] + values[idx2]
+        optimum = [opt1, opt2].max
+        solutions_table[idx1][idx2] = optimum
+      end
+    end
   end
+  solutions_table
+end
+
+def maze_solver(maze, start_pos, end_pos)
 end
