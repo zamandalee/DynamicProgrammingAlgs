@@ -38,16 +38,35 @@ class DynamicProgramming
   end
 
   def frog_hops_top_down(n)
-  end
+      frog_hops_top_down_helper(n)
+    end
 
-  def frog_hops_top_down_helper(n)
-  end
+    def frog_hops_top_down_helper(n)
+      return @frog_td_cache[n] if @frog_td_cache[n]
 
-  def super_frog_hops(n, k)
-  end
+      first = frog_hops_top_down_helper(n - 1).map { |arr| arr + [1] }
+      second = frog_hops_top_down_helper(n - 2).map { |arr| arr + [2] }
+      third = frog_hops_top_down_helper(n - 3).map { |arr| arr + [3] }
 
-  def knapsack(weights, values, capacity)
-  end
+      @frog_td_cache[n] = first + second + third
+    end
+
+    def super_frog_hops(n, k)
+       return [[1, 1], [2]] if n == 2 && k == 2
+       return @super_frog_cache[n] if @super_frog_cache[n]
+
+       moves = []
+       1.upto(k) do |idx|
+         if n - idx > 0
+           moves.concat super_frog_hops(n - idx, k).map {|steps| steps + [idx]}
+         end
+       end
+
+       if n <= k
+         moves << [n]
+       end
+       @super_frog_cache[n] = moves
+    end
 
   # Helper method for bottom-up implementation
   def knapsack_table(weights, values, capacity)
